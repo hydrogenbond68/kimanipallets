@@ -6,12 +6,15 @@ interface CartProps {
   items: CartItem[];
   onClose: () => void;
   onUpdateItem: (id: string, quantity: number) => void;
-  total: number;
 }
 
-export default function Cart({ items, onClose, onUpdateItem, total }: CartProps) {
+export default function Cart({ items, onClose, onUpdateItem }: CartProps) {
   const handleCheckout = () => {
-    alert('Checkout functionality would be implemented here!');
+    if (items.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+    alert(`Thank you for your interest in ${items.length} item(s)! We will contact you with a custom quote.`);
   };
 
   return (
@@ -48,7 +51,7 @@ export default function Cart({ items, onClose, onUpdateItem, total }: CartProps)
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                    <p className="text-amber-600 font-semibold">${item.price.toLocaleString()}</p>
+                    <p className="text-gray-600 text-sm">Custom Quote Available</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
@@ -74,14 +77,14 @@ export default function Cart({ items, onClose, onUpdateItem, total }: CartProps)
         {items.length > 0 && (
           <div className="border-t p-6">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-lg font-semibold text-gray-900">Total:</span>
-              <span className="text-2xl font-bold text-amber-600">${total.toLocaleString()}</span>
+              <span className="text-lg font-semibold text-gray-900">Items:</span>
+              <span className="text-2xl font-bold text-amber-600">{items.length}</span>
             </div>
             <button
               onClick={handleCheckout}
               className="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition-colors"
             >
-              Proceed to Checkout
+              Request Quote
             </button>
           </div>
         )}

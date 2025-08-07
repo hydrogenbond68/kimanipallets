@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Package, Users, TrendingUp, LogOut } from 'lucide-react';
-import { Product, User } from '../types';
+import { Plus, Edit, Trash2, Package, Users, TrendingUp, LogOut, MessageCircle, Eye, X } from 'lucide-react';
+import { Product, User, Enquiry } from '../types';
 
 interface AdminDashboardProps {
   user: User;
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  enquiries: Enquiry[];
   onLogout: () => void;
 }
 
-export default function AdminDashboard({ user, products, setProducts, onLogout }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders'>('overview');
+export default function AdminDashboard({ user, products, setProducts, enquiries, onLogout }: AdminDashboardProps) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'enquiries'>('overview');
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
-    price: '',
     image: '',
     category: 'beds',
     inStock: true
@@ -27,14 +28,13 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
       id: Date.now().toString(),
       name: newProduct.name,
       description: newProduct.description,
-      price: parseFloat(newProduct.price),
       image: newProduct.image || 'https://images.pexels.com/photos/1148955/pexels-photo-1148955.jpeg',
       category: newProduct.category,
       rating: 4.5,
       inStock: newProduct.inStock
     };
     setProducts(prev => [...prev, product]);
-    setNewProduct({ name: '', description: '', price: '', image: '', category: 'beds', inStock: true });
+    setNewProduct({ name: '', description: '', image: '', category: 'beds', inStock: true });
     setShowAddProduct(false);
   };
 
@@ -44,9 +44,9 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
 
   const stats = [
     { label: 'Total Products', value: products.length, icon: Package, color: 'bg-blue-500' },
-    { label: 'Total Orders', value: 156, icon: TrendingUp, color: 'bg-green-500' },
+    { label: 'Enquiries', value: enquiries.length, icon: MessageCircle, color: 'bg-green-500' },
     { label: 'Customers', value: 89, icon: Users, color: 'bg-purple-500' },
-    { label: 'Revenue', value: '$45,670', icon: TrendingUp, color: 'bg-amber-500' }
+    { label: 'Pending Enquiries', value: enquiries.filter(e => e.status === 'pending').length, icon: TrendingUp, color: 'bg-amber-500' }
   ];
 
   return (
@@ -103,6 +103,16 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
           >
             Orders
           </button>
+          <button
+            onClick={() => setActiveTab('enquiries')}
+            className={`pb-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'enquiries'
+                ? 'border-amber-500 text-amber-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Enquiries ({enquiries.filter(e => e.status === 'pending').length})
+          </button>
         </div>
 
         {/* Overview Tab */}
@@ -117,7 +127,7 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                      <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                     </div>
                   </div>
                 </div>
@@ -127,18 +137,23 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
               <div className="space-y-4">
-                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-4"></div>
-                  <span className="text-gray-700">New order #1234 received - $1,299</span>
-                </div>
-                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-4"></div>
-                  <span className="text-gray-700">Product "Executive Dining Table" updated</span>
-                </div>
-                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mr-4"></div>
-                  <span className="text-gray-700">New customer registration</span>
-                </div>
+                {enquiries.slice(0, 5).map((enquiry) => (
+                  <div key={enquiry.id} className="flex items-center p-4 bg-gray-50 rounded-lg">
+                    <div className={`w-2 h-2 rounded-full mr-4 ${
+                      enquiry.status === 'pending' ? 'bg-amber-500' : 
+                      enquiry.status === 'responded' ? 'bg-blue-500' : 'bg-green-500'
+                    }`}></div>
+                    <span className="text-gray-700">
+                      New enquiry from {enquiry.customerName} - {products.find(p => p.id === enquiry.productId)?.name}
+                    </span>
+                  </div>
+                ))}
+                {enquiries.length === 0 && (
+                  <div className="text-center py-8">
+                    <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">No enquiries yet.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -169,9 +184,6 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
                       Category
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Price
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -196,9 +208,6 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {product.category}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${product.price.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -245,6 +254,101 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
             </div>
           </div>
         )}
+
+        {/* Enquiries Tab */}
+        {activeTab === 'enquiries' && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Enquiries</h2>
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              {enquiries.length === 0 ? (
+                <div className="text-center py-12">
+                  <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No enquiries yet.</p>
+                  <p className="text-gray-400 text-sm">Customer enquiries will appear here.</p>
+                </div>
+              ) : (
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Customer
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Product
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {enquiries.map((enquiry) => {
+                      const product = products.find(p => p.id === enquiry.productId);
+                      return (
+                        <tr key={enquiry.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{enquiry.customerName}</div>
+                              <div className="text-sm text-gray-500">{enquiry.customerEmail}</div>
+                              <div className="text-sm text-gray-500">{enquiry.customerPhone}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              {product && (
+                                <>
+                                  <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="h-10 w-10 rounded-lg object-cover"
+                                  />
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {new Date(enquiry.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                enquiry.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : enquiry.status === 'responded'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : 'bg-green-100 text-green-800'
+                              }`}
+                            >
+                              {enquiry.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button
+                              onClick={() => setSelectedEnquiry(enquiry)}
+                              className="text-indigo-600 hover:text-indigo-900 flex items-center"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Add Product Modal */}
@@ -274,18 +378,6 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
                   onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   rows={3}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Price ($)
-                </label>
-                <input
-                  type="number"
-                  value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -334,6 +426,93 @@ export default function AdminDashboard({ user, products, setProducts, onLogout }
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Enquiry Details Modal */}
+      {selectedEnquiry && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">Enquiry Details</h3>
+              <button
+                onClick={() => setSelectedEnquiry(null)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">Customer Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-sm text-gray-600">Name:</span>
+                    <p className="font-medium">{selectedEnquiry.customerName}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Email:</span>
+                    <p className="font-medium">{selectedEnquiry.customerEmail}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Phone:</span>
+                    <p className="font-medium">{selectedEnquiry.customerPhone}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Date:</span>
+                    <p className="font-medium">{new Date(selectedEnquiry.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">Product of Interest</h4>
+                {(() => {
+                  const product = products.find(p => p.id === selectedEnquiry.productId);
+                  return product ? (
+                    <div className="flex items-center space-x-4">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-16 h-16 object-cover rounded-lg"
+                      />
+                      <div>
+                        <h5 className="font-medium">{product.name}</h5>
+                        <p className="text-gray-600 text-sm">{product.description}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">Product not found</p>
+                  );
+                })()}
+              </div>
+              
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Message</h4>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-gray-700">{selectedEnquiry.message}</p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setSelectedEnquiry(null)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    window.open(`mailto:${selectedEnquiry.customerEmail}?subject=Re: ${products.find(p => p.id === selectedEnquiry.productId)?.name} Enquiry`);
+                  }}
+                  className="bg-amber-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-amber-700 transition-colors"
+                >
+                  Reply via Email
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -1,46 +1,56 @@
 import React from 'react';
 import { Hammer, Ruler, Palette, Wrench, Home, Star } from 'lucide-react';
 
-const services = [
+interface ServicesProps {
+  onServiceClick: (category: string) => void;
+}
+
+export default function Services({ onServiceClick }: ServicesProps) {
+  const services = [
   {
     icon: Hammer,
     title: 'Custom Furniture Design',
     description: 'Bespoke furniture pieces crafted to your exact specifications and style preferences.',
-    features: ['Unique designs', 'Premium materials', 'Expert craftsmanship']
+    features: ['Unique designs', 'Premium materials', 'Expert craftsmanship'],
+    category: 'custom'
   },
   {
     icon: Home,
     title: 'Kitchen Cabinet Installation',
     description: 'Complete kitchen transformation with custom cabinets and professional installation.',
-    features: ['Soft-close hinges', 'Custom storage', 'Modern finishes']
+    features: ['Soft-close hinges', 'Custom storage', 'Modern finishes'],
+    category: 'kitchen'
   },
   {
     icon: Ruler,
     title: 'Wood Floor Installation',
     description: 'Premium hardwood flooring installation with professional finishing.',
-    features: ['Quality hardwood', 'Perfect finishing', 'Long-lasting durability']
+    features: ['Quality hardwood', 'Perfect finishing', 'Long-lasting durability'],
+    category: 'custom'
   },
   {
     icon: Palette,
     title: 'Interior Woodwork',
     description: 'Complete interior woodwork including wardrobes, shelving, and built-ins.',
-    features: ['Built-in storage', 'Custom wardrobes', 'Architectural details']
+    features: ['Built-in storage', 'Custom wardrobes', 'Architectural details'],
+    category: 'wardrobes'
   },
   {
     icon: Wrench,
     title: 'Furniture Repair',
     description: 'Professional furniture restoration and repair services for all wood furniture.',
-    features: ['Restoration', 'Refinishing', 'Structural repairs']
+    features: ['Restoration', 'Refinishing', 'Structural repairs'],
+    category: 'custom'
   },
   {
     icon: Star,
     title: 'Gypsum Fitting',
     description: 'Professional gypsum ceiling and wall installations with modern designs.',
-    features: ['Modern designs', 'LED integration', 'Professional finish']
+    features: ['Modern designs', 'LED integration', 'Professional finish'],
+    category: 'custom'
   }
 ];
 
-export default function Services() {
   return (
     <section id="services" className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,15 +88,21 @@ export default function Services() {
                 ))}
               </ul>
               
-              <button className="mt-6 text-amber-600 font-semibold hover:text-amber-700 transition-colors">
-                Learn More →
+              <button 
+                onClick={() => onServiceClick(service.category)}
+                className="mt-6 text-amber-600 font-semibold hover:text-amber-700 transition-colors"
+              >
+                View Products →
               </button>
             </div>
           ))}
         </div>
         
         <div className="mt-12 text-center">
-          <button className="bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-amber-700 transition-colors">
+          <button 
+            onClick={() => onServiceClick('custom')}
+            className="bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-amber-700 transition-colors"
+          >
             Request Custom Quote
           </button>
         </div>

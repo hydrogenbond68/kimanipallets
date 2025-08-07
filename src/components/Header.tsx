@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingCart, User, Menu, Search } from 'lucide-react';
-//import { User as UserType } from '../types';
+import { User as UserType } from '../types';
 
 interface HeaderProps {
   currentUser: UserType | null;
