@@ -1,4 +1,5 @@
 Kimanipallets furniture 
+
 Welcome to kimanipallets! This is a web application built using React.js and TypeScript. The kimanipallets App is designed to provide a seamless user experience with a focus on performance and maintainability.
 
 
