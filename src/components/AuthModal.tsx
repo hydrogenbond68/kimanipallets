@@ -128,7 +128,11 @@ export default function AuthModal({ mode, onClose, onLogin, onRegister, onSwitch
         </div>
 
         {mode === 'login' && (
-      
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+            <strong>Demo Credentials:</strong><br />
+            Admin: admin@furniture.com / admin123<br />
+            Customer: john@example.com / customer123
+          </div>
         )}
       </div>
     </div>

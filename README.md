@@ -1,70 +1,65 @@
-# React + TypeScript + Vite
+Kimanipallets furniture 
+Welcome to kimanipallets! This is a web application built using React.js and TypeScript. The kimanipallets App is designed to provide a seamless user experience with a focus on performance and maintainability.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+Features
+Responsive Design: The app is fully responsive and works on various devices.
+Type Safety: Leveraging TypeScript for type safety and better development experience.
+Component-Based Architecture: Built using reusable components for better maintainability.
+State Management: Utilizes React's Context API for state management.
+Routing: Implemented using React Router for seamless navigation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Technologies Used
+React.js: A JavaScript library for building user interfaces.
+TypeScript: A superset of JavaScript that adds static types.
+React Router: For routing and navigation.
+CSS Modules: For styling components.
+Axios: For making HTTP requests.
+Getting Started
+To get started with the kimanipallets App, follow these steps:
 
-## Expanding the ESLint configuration
+Clone the repository:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+bash
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Run
+Copy code
+git clone  git@github.com:hydrogenbond68/kimanipallets.git
+Navigate to the project directory:
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+bash
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Run
+Copy code
+cd kimanipallets
+Install dependencies:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+bash
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Run
+Copy code
+npm install
+Start the development server:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# kimanipallets
+bash
+
+Run
+Copy code
+npm run dev
+Open your browser and navigate to http://localhost:3000 to see the app in action.
+
+Folder Structure
+
+Run
+npm run dev: Starts the development server.
+npm run build: Builds the app for production.
+npm test: Runs the test suite.
+npm run eject: Ejects the configuration (use with caution).
+Contributing
+We welcome contributions! If you would like to contribute to the kimanipallets furniture App, please follow these steps:
+
+Fork the repository.
+Create a new branch (git checkout -b feature/YourFeature).
+Make your changes and commit them (git commit -m 'Add some feature').
+Push to the branch (git push origin feature/YourFeature).
+Open a pull request.

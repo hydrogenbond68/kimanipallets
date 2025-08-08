@@ -392,7 +392,6 @@ export default function AdminDashboard({ user, products, setProducts, enquiries,
                 >
                   <option value="beds">Beds</option>
                   <option value="dining">Dining</option>
-                  <option value="sofas">Sofas</option>
                   <option value="office">Office</option>
                   <option value="kitchen">Kitchen</option>
                   <option value="wardrobes">Wardrobes</option>

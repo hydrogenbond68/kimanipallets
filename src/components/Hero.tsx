@@ -91,9 +91,6 @@ export default function Hero({ onAddToCart, onEnquiry, onViewGallery }: HeroProp
                 Shop Now
                 <ArrowRight className="ml-3 h-6 w-6" />
               </button>
-              <button className="border-2 border-amber-400 text-amber-400 px-10 py-4 rounded-lg font-semibold hover:bg-amber-400 hover:text-white transition-colors text-lg">
-                Custom Design
-              </button>
             </div>
             
             <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
@@ -102,7 +99,7 @@ export default function Hero({ onAddToCart, onEnquiry, onViewGallery }: HeroProp
                 <div className="text-gray-200">Years Experience</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-amber-400 mb-2">1000+</div>
+                <div className="text-4xl font-bold text-amber-400 mb-2">500+</div>
                 <div className="text-gray-200">Happy Customers</div>
               </div>
               <div className="text-center">
